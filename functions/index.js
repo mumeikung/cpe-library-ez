@@ -741,10 +741,10 @@ exports.analysis1057_2 =  functions.https.onCall((data, context) => {
   let count = {}
   return firestore.collection('borrow').get().then((docs) => {
     docs.forEach((doc => {
-      temp[doc.data().StockID] = 0
+      temp[doc.data().ItemID] = 0
     }))
     docs.forEach((doc => {
-      temp[doc.data().StockID] += 1
+      temp[doc.data().ItemID] += 1
     }))
     return firestore.collection('stock').get()
   }).then((docs) => {
@@ -766,34 +766,36 @@ exports.analysis1057_2 =  functions.https.onCall((data, context) => {
 })
 
 exports.analysis1057_3 = functions.https.onCall((data, context) => {
-  let temp = {}
-  let count = {}
-  return firestore.collection('borrow').get().then((docs) => {
-    docs.forEach(doc => {
-      doc.data().ReturnTime.setHours(0,0,0,0)
-      doc.data().BorrowTime.setHours(0,0,0,0)
-      temp[doc.data().StockID] = 0
+    let temp = {}
+    let count = {}
+    return firestore.collection('borrow').get().then((docs) => {
+      docs.forEach(doc => {
+        if(doc.data().ReturnTime !== 'not yet'){
+          doc.data().ReturnTime.setHours(0,0,0,0)
+          doc.data().BorrowTime.setHours(0,0,0,0)
+          temp[doc.data().ItemID] = 0
+        }
+      })
+      docs.forEach(doc => {
+        if(doc.data().ReturnTime !== 'not yet') temp[doc.data().ItemID] += (doc.data().ReturnTime - doc.data().BorrowTime)/(24*60*60*1000)
+      })
+      return firestore.collection('stock').get()
+    }).then((docs) => {
+      docs.forEach(doc => {
+        count[doc.data().ItemID] = 0
+      })
+      docs.forEach(doc => {
+        count[doc.data().ItemID] += temp[doc.id]
+      })
+      return firestore.collection('book').get()
+    }).then((docs) => {
+      let result = []
+      docs.forEach(doc => {
+        if(count[doc.id]) result.push({itemID: doc.id, bookName: doc.data().Name, categoryID: doc.data().CategoryID, count: count[doc.id]})
+      })
+      result = _.orderBy(result, 'count', 'desc')
+      return result.slice(0,9)
     })
-    docs.forEach(doc => {
-      temp[doc.data().StockID] += (doc.data().ReturnTime - doc.data().BorrowTime)/(24*60*60*1000)
-    })
-    return firestore.collection('stock').get()
-  }).then((docs) => {
-    docs.forEach(doc => {
-      count[doc.data().ItemID] = 0
-    })
-    docs.forEach(doc => {
-      count[doc.data().ItemID] += temp[doc.id]
-    })
-    return firestore.collection('book').get()
-  }).then((docs) => {
-    let result = []
-    docs.forEach(doc => {
-      if(count[doc.id]) result.push({itemID: doc.id, bookName: doc.data().Name, categoryID: doc.data().CategoryID, count: count[doc.id]})
-    })
-    result = _.orderBy(result, 'count', 'desc')
-    return result.slice(0,9)
-  })
 })
 
 exports.analysis1070_1_in = functions.https.onCall((data, context) => {
@@ -883,11 +885,13 @@ exports.analysis1085_1 = functions.https.onCall((data, context) => {
     let sum = {}
     let result = []
     docs.forEach(doc => {
-      if(sum[doc.data().ReturnTime.getFullYear().toString()] === undefined) sum[doc.data().ReturnTime.getFullYear().toString()] = {}
-      sum[doc.data().ReturnTime.getFullYear().toString()][doc.data().ReturnTime.getMonth().toString()] = 0
+      if(doc.data().ReturnTime !== 'not yet'){
+        if(sum[doc.data().ReturnTime.getFullYear().toString()] === undefined) sum[doc.data().ReturnTime.getFullYear().toString()] = {}
+        sum[doc.data().ReturnTime.getFullYear().toString()][doc.data().ReturnTime.getMonth().toString()] = 0
+      }
     })
     docs.forEach(doc => {
-      sum[doc.data().ReturnTime.getFullYear().toString()][doc.data().ReturnTime.getMonth().toString()] += doc.data().Fine
+      if(doc.data().ReturnTime !== 'not yet') sum[doc.data().ReturnTime.getFullYear().toString()][doc.data().ReturnTime.getMonth().toString()] += doc.data().Fine
     })
     for(let y in sum){
       let temp = sum[y]
