@@ -793,6 +793,7 @@ exports.analysis1057_3 = functions.https.onCall((data, context) => {
     })
     result = _.orderBy(result, 'count', 'desc')
     return result.slice(0,9)
+  })
 })
 
 exports.analysis1070_1_in = functions.https.onCall((data, context) => {
@@ -878,6 +879,28 @@ exports.analysis1070_3 = functions.https.onCall((data, context) => {
 })
 
 exports.analysis1085_1 = functions.https.onCall((data, context) => {
+  return firestore.collection('borrow').get().then((docs) => {
+    let sum = {}
+    let result = []
+    docs.forEach(doc => {
+      if(sum[doc.data().ReturnTime.getFullYear().toString()] === undefined) sum[doc.data().ReturnTime.getFullYear().toString()] = {}
+      sum[doc.data().ReturnTime.getFullYear().toString()][doc.data().ReturnTime.getMonth().toString()] = 0
+    })
+    docs.forEach(doc => {
+      sum[doc.data().ReturnTime.getFullYear().toString()][doc.data().ReturnTime.getMonth().toString()] += doc.data().Fine
+    })
+    for(let y in sum){
+      let temp = sum[y]
+      for(let m in temp){
+        result.push({year: y, month: m, sumFine: sum[y][m]})
+      }
+    }
+    result = _.orderBy(result, 'sumFine', 'desc')
+    return result
+  })
+})
+
+exports.analysis1085_2 = functions.https.onCall((data, context) => {
   return firestore.collection('users').get().then((docs) => {
     let count = {}
     let today = new Date()
@@ -894,29 +917,6 @@ exports.analysis1085_1 = functions.https.onCall((data, context) => {
       b = new Date(doc.data().DOB)
       a = today.getFullYear() - b.getFullYear()
       count[a.toString()][doc.data().Gender] += 1
-    })
-    for(let y in count){
-      let temp = count[y]
-      for(let g in temp){
-        result.push({age: y, gender: g, count: count[y][g]})
-      }
-    }
-    result = _.orderBy(result, 'count', 'desc')
-    return result.slice(0,9)
-  })
-})
-
-exports.analysis1085_2 = functions.https.onCall((data, context) => {
-  return firestore.collection('users').get().then((docs) => {
-    let count = {}
-    let today = new Date()
-    let result = []
-    docs.forEach(doc => {
-      if(count[today.getFullYear() - doc.data().DOB.getFullYear()] === undefined) count[today.getFullYear() - doc.data().DOB.getFullYear()] = {}
-      count[today.getFullYear() - doc.data().DOB.getFullYear()][doc.data().Gender] = 0
-    })
-    docs.forEach(doc => {
-      count[today.getFullYear() - doc.data().DOB.getFullYear()][doc.data().Gender] += 1
     })
     for(let y in count){
       let temp = count[y]
