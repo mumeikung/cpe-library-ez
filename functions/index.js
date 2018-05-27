@@ -715,15 +715,15 @@ exports.getMemberData = functions.https.onCall((data, context) => {
 })
 
 exports.analysis1057_1 = functions.https.onCall((data, context) => {
-  return firestore.collection('ิborrow').get().then((docs) => {
+  return firestore.collection('borrow').get().then((docs) => {
     let count = {}
     let result = []
     docs.forEach((doc) => {
-      if(count[doc.data().BorrowTime.getFullYear()] === undefined) count[doc.data().BorrowTime.getFullYear()] = {}
-      count[doc.data().BorrowTime.getFullYear()][doc.data().BorrowTime.getMonth()] = 0
+      if(count[doc.data().BorrowTime.getFullYear().toString()] === undefined) count[doc.data().BorrowTime.getFullYear().toString()] = {}
+      count[doc.data().BorrowTime.getFullYear().toString()][doc.data().BorrowTime.getMonth().toString()] = 0
     })
     docs.forEach((doc) => {
-      count[doc.data().BorrowTime.getFullYear()][doc.data().BorrowTime.getMonth()] += 1
+      count[doc.data().BorrowTime.getFullYear().toString()][doc.data().BorrowTime.getMonth().toString()] += 1
     })
     for(let y in count){
       let temp = count[y]
@@ -731,8 +731,8 @@ exports.analysis1057_1 = functions.https.onCall((data, context) => {
         result.push({year: y, month: m, count: count[y][m]})
       }
     }
-    _.orderBy(result, 'count', 'desc')
-    return result
+    result = _.orderBy(result, 'count', 'desc')
+    return result.slice(0,9)
   })
 })
 
@@ -760,8 +760,8 @@ exports.analysis1057_2 =  functions.https.onCall((data, context) => {
     docs.forEach(doc => {
       result.push({itemID: doc.id, bookName: doc.data().Name, categoryID: doc.data().CategoryID, count: count[doc.id]})
     })
-    _.orderBy(result, 'count', 'desc')
-    return result
+    result = _.orderBy(result, 'count', 'desc')
+    return result.slice(0,9)
   })
 })
 
@@ -789,11 +789,10 @@ exports.analysis1057_3 = functions.https.onCall((data, context) => {
   }).then((docs) => {
     let result = []
     docs.forEach(doc => {
-      result.push({itemID: doc.id, bookName: doc.data().Name, categoryID: doc.data().CategoryID, count: count[doc.id]})
+      if(count[doc.id]) result.push({itemID: doc.id, bookName: doc.data().Name, categoryID: doc.data().CategoryID, count: count[doc.id]})
     })
-    _.orderBy(result, 'count', 'desc')
-    return result
-  })
+    result = _.orderBy(result, 'count', 'desc')
+    return result.slice(0,9)
 })
 
 exports.analysis1070_1_in = functions.https.onCall((data, context) => {
@@ -801,17 +800,17 @@ exports.analysis1070_1_in = functions.https.onCall((data, context) => {
     let count = {}
     let result = []
     docs.forEach(doc => {
-      count[doc.data().TimeIn.getHours()] = 0
+      count[doc.data().TimeIn.getHours().toString()] = 0
     })
     docs.forEach(doc => {
-      count[doc.data().TimeIn.getHours()] += 1
+      count[doc.data().TimeIn.getHours().toString()] += 1
     })
     for(let h in count){
       //in the report it actually finds the average per day which I'm too lazy to do it
       result.push({hourIn: h, count: count[h]})
     }
-    _.orderBy(result, 'count', 'desc')
-    return result
+    result = _.orderBy(result, 'count', 'desc')
+    return result.slice(0,9)
   })
 })
 
@@ -820,32 +819,31 @@ exports.analysis1070_1_out = functions.https.onCall((data, context) => {
     let count = {}
     let result = []
     docs.forEach(doc => {
-      count[doc.data().TimeOut.getHours()] = 0
+      count[doc.data().TimeOut.getHours().toString()] = 0
     })
     docs.forEach(doc => {
-      count[doc.data().TimeOut.getHours()] += 1
+      count[doc.data().TimeOut.getHours().toString()] += 1
     })
     for(let h in count){
       //in the report it actually finds the average per day which I'm too lazy to do it
       result.push({hourOut: h, count: count[h]})
     }
-    _.orderBy(result, 'count', 'desc')
-    return result
+    result = _.orderBy(result, 'count', 'desc')
+    return result.slice(0,9)
   })
 })
 
 exports.analysis1070_2 = functions.https.onCall((data, context) => {
-  //let me guess, collapse, right?
   return firestore.collection('checkinout').get().then((docs) => {
     let count = {}
     let result = []
     docs.forEach(doc => {
-      if(count[doc.data().TimeIn.getFullYear()] === undefined) count[doc.data().TimeIn.getFullYear()] = {}
-      if(count[doc.data().TimeIn.getFullYear()][doc.data().TimeIn.getMonth()] === undefined) count[doc.data().TimeIn.getFullYear()][doc.data().TimeIn.getMonth()] = {}
-      count[doc.data().TimeIn.getFullYear()][doc.data().TimeIn.getMonth()][doc.data().TimeIn.getDate()] = 0
+      if(count[doc.data().TimeIn.getFullYear().toString()] === undefined) count[doc.data().TimeIn.getFullYear().toString()] = {}
+      if(count[doc.data().TimeIn.getFullYear().toString()][doc.data().TimeIn.getMonth().toString()] === undefined) count[doc.data().TimeIn.getFullYear().toString()][doc.data().TimeIn.getMonth().toString()] = {}
+      count[doc.data().TimeIn.getFullYear().toString()][doc.data().TimeIn.getMonth().toString()][doc.data().TimeIn.getDate().toString()] = 0
     })
     docs.forEach(doc => {
-      count[doc.data().TimeIn.getFullYear()][doc.data().TimeIn.getMonth()][doc.data().TimeIn.getDate()] += 1
+      count[doc.data().TimeIn.getFullYear().toString()][doc.data().TimeIn.getMonth().toString()][doc.data().TimeIn.getDate().toString()] += 1
     })
     for(let y in count){
       let tempYear = count[y]
@@ -856,8 +854,8 @@ exports.analysis1070_2 = functions.https.onCall((data, context) => {
         }
       }
     }
-    _.orderBy(result, 'count', 'desc')
-    return result
+    result = _.orderBy(result, 'count', 'desc')
+    return result.slice(0,9)
   })
 })
 
@@ -874,30 +872,37 @@ exports.analysis1070_3 = functions.https.onCall((data, context) => {
     for(let id in min){
       result.push({uid: id, min: min[id]})
     }
-    _.orderBy(result, 'min', 'desc')
-    return result
+    result = _.orderBy(result, 'min', 'desc')
+    return result.slice(0,9)
   })
 })
 
 exports.analysis1085_1 = functions.https.onCall((data, context) => {
-  return firestore.collection('borrow').get().then((docs) => {
-    let sum = {}
+  return firestore.collection('users').get().then((docs) => {
+    let count = {}
+    let today = new Date()
     let result = []
+    let a = null
+    let b = null
     docs.forEach(doc => {
-      if(sum[doc.data().BorrowTime.getFullYear()] === undefined) sum[doc.data().BorrowTime.getFullYear()] = {}
-      sum[doc.data().BorrowTime.getFullYear()][doc.data().BorrowTime.getMonth()] = 0
+      b = new Date(doc.data().DOB)
+      a = today.getFullYear() - b.getFullYear()
+      if(count[a.toString()] === undefined) count[a.toString()] = {}
+      count[a.toString()][doc.data().Gender] = 0
     })
     docs.forEach(doc => {
-      sum[doc.data().BorrowTime.getFullYear()][doc.data().BorrowTime.getMonth()] += doc.data().Fine
+      b = new Date(doc.data().DOB)
+      a = today.getFullYear() - b.getFullYear()
+      count[a.toString()][doc.data().Gender] += 1
     })
-    for(let y in sum){
-      let temp = sum[y]
-      for(let m in temp){
-        result.push({year: y, month: m, sumFine: sum[y][m]})
+    for(let y in count){
+      let temp = count[y]
+      for(let g in temp){
+        result.push({age: y, gender: g, count: count[y][g]})
       }
     }
-    _.orderBy(result, 'sumFine', 'desc')
-  return result
+    result = _.orderBy(result, 'count', 'desc')
+    return result.slice(0,9)
   })
 })
 
@@ -919,8 +924,8 @@ exports.analysis1085_2 = functions.https.onCall((data, context) => {
         result.push({age: y, gender: g, count: count[y][g]})
       }
     }
-    _.orderBy(result, 'count', 'desc')
-  return result
+    result = _.orderBy(result, 'count', 'desc')
+    return result.slice(0,9)
   })
 })
 
@@ -929,16 +934,16 @@ exports.analysis1085_3 = functions.https.onCall((data, context) => {
     let count = {}
     let result = []
     docs.forEach(doc => {
-      count[doc.data().RegisteredTime.getMonth()] = 0
+      count[doc.data().RegisteredTime.getMonth().toString()] = 0
     })
     docs.forEach(doc => {
-      count[doc.data().RegisteredTime.getMonth()] += 1
+      count[doc.data().RegisteredTime.getMonth().toString()] += 1
     })
     for(let m in count){
       result.push({month: m, count: count[m]})
     }
-    _.orderBy(result, 'count', 'desc')
-  return result
+    result = _.orderBy(result, 'count', 'desc')
+    return result.slice(0,9)
   })
 })
 
@@ -955,8 +960,8 @@ exports.analysis1093_1 = functions.https.onCall((data, context) => {
     for(let p in count){
       result.push({Publisher: p, count: count[p]})
     }
-    _.orderBy(result, 'count', 'desc')
-    return result
+    result = _.orderBy(result, 'count', 'desc')
+    return result.slice(0,9)
   })
 })
 
@@ -973,10 +978,10 @@ exports.analysis1093_2 = functions.https.onCall((data, context) => {
   }).then((docs) => {
     let result = []
     docs.forEach(doc => {
-      result.push({CategoryID: doc.id, Description: doc.data().description, count: count[doc.id]})
+      if(count[doc.id] !== undefined) result.push({CategoryID: doc.id, Description: doc.data().description, count: count[doc.id]})
     })
-    _.orderBy(result, 'count', 'desc')
-    return result
+    result = _.orderBy(result, 'count', 'desc')
+    return result.slice(0,9)
   })
 })
 
@@ -993,9 +998,9 @@ exports.analysis1093_3 = functions.https.onCall((data, context) => {
   }).then((docs) => {
     let result = []
       docs.forEach(doc => {
-        result.push({itemID: doc.id, bookName: doc.data().Name, publisher: doc.data().Publisher, author: doc.data().Author, count: count[doc.id]})
+        if(count[doc.id] !== undefined) result.push({itemID: doc.id, bookName: doc.data().Name, publisher: doc.data().Publisher, author: doc.data().Author, count: count[doc.id]})
       })
-      _.orderBy(result, 'count', 'desc')
-    return result
+      result = _.orderBy(result, 'count', 'desc')
+      return result.slice(0,9)
   })
 })
