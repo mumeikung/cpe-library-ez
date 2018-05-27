@@ -85,7 +85,7 @@ export default {
           output.push({
             borrowID: doc.id,
             stockID: doc.data().StockID,
-            DueTime: new Date(doc.data().DueTime.seconds*1000)
+            DueTime: new Date(doc.data().DueTime.seconds * 1000)
           })
         })
         this.bookList = output
