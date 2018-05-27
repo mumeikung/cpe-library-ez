@@ -16,7 +16,7 @@
           <li class="nav-item dropdown">
             <b-nav-item-dropdown id="nav7_ddown" text="Service" extra-toggle-classes="nav-link-custom" right>
               <b-dropdown-item @click="$router.push('/search')">Search Book</b-dropdown-item>
-              <b-dropdown-divider/>
+              <b-dropdown-divider v-if="isStaff"/>
               <b-dropdown-item v-if="isStaff" @click="$router.push('/borrow')">Borrow</b-dropdown-item>
               <b-dropdown-item v-if="isStaff" @click="$router.push('/return')">Return</b-dropdown-item>
               <b-dropdown-divider v-if="isStaff"/>
@@ -24,8 +24,6 @@
               <b-dropdown-item v-if="isStaff" @click="$router.push('/editmember')">Edit Member</b-dropdown-item>
               <b-dropdown-divider v-if="isStaff"/>
               <b-dropdown-item v-if="isStaff" @click="$router.push('/addstaff')">Add Staff</b-dropdown-item>
-              <b-dropdown-divider v-if="isStaff"/>
-              <b-dropdown-item @click="$router.push('/info')">Infomation</b-dropdown-item>
             </b-nav-item-dropdown>
           </li>
           <li class="nav-item">
@@ -47,7 +45,7 @@
 </template>
 
 <script>
-// import firebase from '@/firebase'
+import firebase from '@/firebase'
 
 export default {
   name: 'app',
@@ -61,7 +59,8 @@ export default {
     displayName: function () {
       return this.$store.getters.displayName
     }
-  }/* ,
+  }
+  /* ,
   methods: {
     myfunc: function () {
       const json = ``
@@ -69,8 +68,8 @@ export default {
       for (const key in ready) {
         if (ready.hasOwnProperty(key)) {
           const element = ready[key]
-          firebase.firestore().collection('book').doc(key).set(element).then(resp => {console.log('book', key)}).catch(error => {console.error('book', key)})
-          **let data = {}
+          // firebase.firestore().collection('book').doc(key).set(element).then(resp => {console.log('book', key)}).catch(error => {console.error('book', key)})
+          let data = {}
           data.StockID = element.StockID
           data.BorrowTime = new Date(element.BorrowTime)
           data.DueTime = new Date(element.DueTime)
@@ -78,7 +77,7 @@ export default {
           data.Borrower = element.Borrower
           data.StaffID = element.StaffID
           data.Fine = parseInt(element.Fine)
-          firebase.firestore().collection('borrow').doc(key).set(data).then(resp => {console.log('borrow', key)}).catch(error => {console.error('borrow', key)}) **
+          firebase.firestore().collection('borrow').doc(key).set(data).then(resp => {console.log('borrow', key)}).catch(error => {console.error('borrow', key)})
         }
       }
     }
