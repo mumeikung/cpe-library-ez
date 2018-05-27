@@ -52,7 +52,7 @@ const store = new Vuex.Store({
     },
     [DATA_UPDATE] (state, data) {
       state.type = data.type
-      state.displayName = data.Name
+      state.displayName = data.Name + ' ' + data.Surname
       state.userData = data
     }
   },
@@ -124,5 +124,6 @@ firebase.auth().onAuthStateChanged(function (user) {
     rtdb()
     rtdb = function () {}
     store.dispatch('logoutSuccess')
+    router.push('/')
   }
 })

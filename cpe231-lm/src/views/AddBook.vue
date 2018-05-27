@@ -158,8 +158,8 @@
     </div>
     <div class="row rowmar">
       <b-col sm="3"></b-col>
-      <b-col sm="6" class="text-right">
-        <b-button variant="success" @click="addNewBook" :disabled="name === null || categoryid === null || publisher === null || author === null || isbn === null || language === null || shelfid === null || borrowlevel < 1 || borrowlevel > 127 || amount < 1 || loading || !categoryValid ">Submit</b-button>
+      <b-col sm="6">
+        <b-button variant="success" @click="addNewBook" :disabled="name === null || categoryid === null || publisher === null || author === null || isbn === null || language === null || shelfid === null || borrowlevel < 1 || borrowlevel > 127 || amount < 1 || loading || !categoryValid ">Add Book</b-button>
       </b-col>
       <b-col sm="3"></b-col>
     </div>

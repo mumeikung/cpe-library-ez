@@ -148,7 +148,7 @@ exports.addBook = functions.https.onCall((data, context) => {
         for(let i= 0; i < amount; i++){
           returnPromise.push(firestore.collection('stock').add({
             ItemID: getto.bookID,
-            RegisteredDate: new Date(),
+            RegisteredTime: new Date(),
             BorrowLevel: data.BorrowLevel
           }))
         }
@@ -168,6 +168,9 @@ exports.addBook = functions.https.onCall((data, context) => {
         else returnToUser.push('failed')
       })
       return returnToUser
+    }).catch(error => {
+      console.error(error)
+      return error
     })
   }
   else return {message: 'auth-error'}
@@ -228,6 +231,9 @@ exports.addMember = functions.https.onCall((data, context) => {
     }).then((getto) => {
       if(typeof getto.message !== 'undefined') return getto
       return 'success'
+    }).catch(error => {
+      console.error(error)
+      return error
     })
   }
   else return {
@@ -401,6 +407,9 @@ exports.borrowBook = functions.https.onCall((data, context) => {
         output.push(doc.id !== undefined ? 'success' : 'failed')
       })
       return output
+    }).catch(error => {
+      console.error(error)
+      return error
     })
   }
   else return {message: 'auth-error'}
@@ -420,9 +429,6 @@ exports.returnBook = functions.https.onCall((data, context) => {
       if(doc.message !== undefined) return doc
       if(typeof data.StockID !== 'string') return {message: 'data-not-ready'}
       else return firestore.collection('borrow').where('StockID', '==', data.StockID).where('ReturnTime', '==', 'not yet').get()
-    }).catch(err => {
-      console.error(err)
-      return err
     }).then((doc) => {
       if(doc.message !== undefined) return doc
       if(doc.size > 0){
@@ -446,6 +452,9 @@ exports.returnBook = functions.https.onCall((data, context) => {
         status: 'success',
         fine: Fine
       }
+    }).catch(err => {
+      console.error(err)
+      return err
     })
   }
   else return {
@@ -525,6 +534,9 @@ exports.editMember = functions.https.onCall((data, context) => {
     }).then((getto) => {
       if (typeof getto.message !== 'undefined') return getto
       return 'success'
+    }).catch(error => {
+      console.error(error)
+      return error
     })
   }
   else return {
@@ -578,6 +590,9 @@ exports.addStaff = functions.https.onCall((data, context) => {
     }).then((getto) => {
       if (typeof getto.message !== 'undefined') return getto
       return 'success'
+    }).catch(error => {
+      console.error(error)
+      return error
     })
   }
   else return {
@@ -608,6 +623,9 @@ exports.categorySet = functions.https.onCall((data, context) => {
     }).then((getto) => {
       if (typeof getto.message !== 'undefined') return getto
       return 'success'
+    }).catch(error => {
+      console.error(error)
+      return error
     })
   }
   else return {
@@ -648,6 +666,9 @@ exports.editBook = functions.https.onCall((data, context) => {
     }).then((getto) => {
       if (typeof getto.message !== 'undefined') return getto
       return 'success'
+    }).catch(error => {
+      console.error(error)
+      return error
     })
   }
   else return {
@@ -677,6 +698,9 @@ exports.editStockLevel = functions.https.onCall((data, context) => {
     }).then((getto) => {
       if (typeof getto.message !== 'undefined') return getto
       return 'success'
+    }).catch(error => {
+      console.error(error)
+      return error
     })
   }
   else return {
@@ -707,6 +731,9 @@ exports.getMemberData = functions.https.onCall((data, context) => {
       } else {
         return {message:'user-not-found'}
       }
+    }).catch(error => {
+      console.error(error)
+      return error
     })
   }
   else return {
