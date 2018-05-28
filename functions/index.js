@@ -741,6 +741,62 @@ exports.getMemberData = functions.https.onCall((data, context) => {
   }
 })
 
+
+exports.checkIn = functions.https.onCall((data, context) => {
+  if(context.auth !== null){
+    return usersFS.doc(data.uid).get().then((doc) => {
+      if(doc.exists) return firestore.collection('checkinout').where('uid', '==', data.uid).where('TimeOut', '==', null).get()
+      else return {message:'user-not-exist'}
+    }).catch(error => {
+      console.error(error)
+      return error
+    }).then((doc) => {
+      if(typeof doc.message !== 'undefined') return doc
+      if(doc.size === 0){
+        firestore.collection('checkinout').add({
+            TimeIn: new Date(),
+            TimeOut: null,
+            uid: data.uid
+          })
+          return 'success'
+      }
+      else return 'you-already-check-in'
+    }).catch(error => {
+      console.error(error)
+      return error
+    })
+  }
+  else return {
+    message: 'auth-error'
+  }
+})
+
+exports.checkOut = functions.https.onCall((data, context) => {
+  if(context.auth !== null){
+    return usersFS.doc(data.uid).get().then((doc) => {
+      if(doc.exists) return firestore.collection('checkinout').where('uid', '==', data.uid).where('TimeOut', '==', null).get()
+      else return {message:'user-not-exist'}
+    }).catch(error => {
+      console.error(error)
+      return error
+    }).then((doc) => {
+      if(typeof doc.message !== 'undefined') return doc
+      if(doc.size > 0){
+        doc.docs[0].ref.update({
+          TimeOut: new Date()
+        })
+        return 'success'
+      }
+      return 'not-check-in-yet'
+    }).catch(error => {
+      console.error(error)
+      return error
+    })
+  }
+  else return {
+    message: 'auth-error'
+  }
+
 exports.analysis1057_1 = functions.https.onCall((data, context) => {
   return firestore.collection('borrow').get().then((docs) => {
     let count = {}
