@@ -31,7 +31,7 @@
           </li>
           <li class="nav-item">
             <a class="nav-link pointer" @click="$router.push('/info')" v-if="isLoggedIn">{{displayName === null ? 'Guest' : displayName}}</a>
-            <a class="nav-link" v-else>Guest</a>
+            <a class="nav-link disabled" v-else>Guest</a>
           </li>
           <li class="nav-item">
             <a class="nav-link pointer text-danger" @click="$store.dispatch('logout')" v-if="isLoggedIn">Logout</a>
