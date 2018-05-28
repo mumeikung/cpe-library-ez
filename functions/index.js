@@ -724,7 +724,7 @@ exports.checkIn = functions.https.onCall((data, context) => {
       return error
     }).then((doc) => {
       if(typeof doc.message !== 'undefined') return doc
-      if(doc.size == 0){
+      if(doc.size === 0){
         firestore.collection('checkinout').add({
             TimeIn: new Date(),
             TimeOut: null,
