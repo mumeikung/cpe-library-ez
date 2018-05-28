@@ -1095,7 +1095,7 @@ exports.analysis1093_3 = functions.https.onCall((data, context) => {
   }).then((docs) => {
     let result = []
       docs.forEach(doc => {
-        if(count[doc.id] !== undefined) result.push({itemID: doc.id, bookName: doc.data().Name, publisher: doc.data().Publisher, author: doc.data().Author, count: count[doc.id]})
+        result.push({itemID: doc.id, bookName: doc.data().Name, publisher: doc.data().Publisher, author: doc.data().Author, count: count[doc.id]})
       })
       result = _.orderBy(result, 'count', 'desc')
       return result.slice(0,9)
