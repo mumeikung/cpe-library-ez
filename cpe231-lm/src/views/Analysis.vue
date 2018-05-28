@@ -163,6 +163,7 @@ export default {
     bindValue: function (key, value) {
       // bind
       if (key === 'month') return parseInt(value) + 1
+      if (key === 'sumFine') return '฿' + parseInt(value).toFixed(2)
       return value
     }
   }
