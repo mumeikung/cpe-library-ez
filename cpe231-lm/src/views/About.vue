@@ -70,6 +70,4 @@
     from   {opacity: 0.0;}
     to {opacity: 1.0;}
 }
-
-
 </style>

@@ -1,5 +1,4 @@
 <template>
-  
   <b-row class="myRow">
     <div id="w">WELCOME|</div>
     <b-col>
@@ -11,10 +10,9 @@
       </b-row>
     </b-col>
     <div id="div1">
-        <img  width="250" height="250" class="rounded" src="@/assets/book.png" style="margin-top:10vw;margin-right:15vw;">
-        </div>
+      <img  width="250" height="250" class="rounded" src="@/assets/book.png" style="margin-top:10vw;margin-right:15vw;">
+    </div>
   </b-row>
- 
 </template>
 
 <script>

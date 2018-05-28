@@ -7,7 +7,7 @@
           <b-card>
             <b-row v-for="opt in val.opts" :key="opt" class="myRow">
               <b-col cols="2">
-                <b-btn @click="getAnalysis(val.id, opt)" variant="primary" :disabled="loading">Load</b-btn>
+                <b-btn @click="getAnalysis(val.id, opt)" variant="primary" :disabled="loading">{{loadORshow(val.id, opt)}}</b-btn>
               </b-col>
               <b-col cols="10" class="text-left">
                 {{name['s_' + val.id]['opt_' + opt]}}
@@ -98,6 +98,11 @@ export default {
     }
   },
   methods: {
+    loadORshow: function (id, opt) {
+      if (this.results[id] === undefined) return 'Load'
+      if (this.results[id]['opt_' + opt] === undefined) return 'Load'
+      return 'Show'
+    },
     loopTEST: function () {
       this.list.forEach(function (data) {
         data.opts.forEach(function (opt) {

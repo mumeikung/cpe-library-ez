@@ -179,7 +179,6 @@
   margin-right: 0px;
   margin-bottom: 12px;
   padding: 0px;
-  
 }
 #div1
 {
