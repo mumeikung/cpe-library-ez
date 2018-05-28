@@ -809,7 +809,6 @@ exports.analysis1070_1_in = functions.https.onCall((data, context) => {
       count[doc.data().TimeIn.getHours().toString()] += 1
     })
     for(let h in count){
-      //in the report it actually finds the average per day which I'm too lazy to do it
       result.push({hourIn: h, count: count[h]})
     }
     result = _.orderBy(result, 'count', 'desc')
@@ -828,7 +827,6 @@ exports.analysis1070_1_out = functions.https.onCall((data, context) => {
       count[doc.data().TimeOut.getHours().toString()] += 1
     })
     for(let h in count){
-      //in the report it actually finds the average per day which I'm too lazy to do it
       result.push({hourOut: h, count: count[h]})
     }
     result = _.orderBy(result, 'count', 'desc')
