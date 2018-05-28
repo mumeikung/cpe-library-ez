@@ -4,9 +4,6 @@
       <b-container>
         <a class="pointer" @click="$router.push('/')"><img width="120" height="120" src="@/assets/LBEZ.png"></a>
         <ul class="navbar-nav">
-          <!--li class="nav-item">
-            <a class="nav-link pointer text-danger" @click="myfunc">DANGER</a>
-          </li-->
           <li class="nav-item">
             <a class="nav-link pointer" @click="$router.push('/')">Home</a>
           </li>
@@ -49,8 +46,6 @@
 </template>
 
 <script>
-// import firebase from '@/firebase'
-
 export default {
   name: 'app',
   computed: {
@@ -64,28 +59,6 @@ export default {
       return this.$store.getters.displayName
     }
   }
-  /* ,
-  methods: {
-    myfunc: function () {
-      const json = ``
-      const ready = JSON.parse(json)
-      for (const key in ready) {
-        if (ready.hasOwnProperty(key)) {
-          const element = ready[key]
-          // firebase.firestore().collection('book').doc(key).set(element).then(resp => {console.log('book', key)}).catch(error => {console.error('book', key)})
-          let data = {}
-          data.StockID = element.StockID
-          data.BorrowTime = new Date(element.BorrowTime)
-          data.DueTime = new Date(element.DueTime)
-          data.ReturnTime = new Date(element.ReturnTime)
-          data.Borrower = element.Borrower
-          data.StaffID = element.StaffID
-          data.Fine = parseInt(element.Fine)
-          firebase.firestore().collection('borrow').doc(key).set(data).then(resp => {console.log('borrow', key)}).catch(error => {console.error('borrow', key)})
-        }
-      }
-    }
-  } */
 }
 </script>
 
