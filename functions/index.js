@@ -732,7 +732,7 @@ exports.analysis1057_1 = functions.https.onCall((data, context) => {
       }
     }
     result = _.orderBy(result, 'count', 'desc')
-    return result.slice(0,9)
+    return result
   })
 })
 
