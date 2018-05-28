@@ -1159,10 +1159,10 @@ exports.analysis1093_3 = functions.https.onCall((data, context) => {
       })
       result = _.orderBy(result, 'count', 'desc')
       let i = 1
-    result.forEach(doc => {
-      doc.rank = i
-      i++
-    })
+      result.forEach(doc => {
+        doc.rank = i
+        i++
+      })
       return result.slice(0,9)
   })
 })

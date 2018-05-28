@@ -33,7 +33,10 @@
             </tr>
             <tr v-for="(value, index) in result" :key="index">
               <td v-for="(myValue, myIndex) in value" :key="index + '_' + myIndex">
-                {{bindValue(myIndex, myValue)}}
+                <img v-if="myIndex === 'rank' && myValue === 1" src="@/assets/rank1.jpg" height="24">
+                <img v-else-if="myIndex === 'rank' && myValue === 2" src="@/assets/rank2.jpg" height="18">
+                <img v-else-if="myIndex === 'rank' && myValue === 3" src="@/assets/rank3.jpg" height="12">
+                <span v-else>{{bindValue(myIndex, myValue)}}</span>
               </td>
             </tr>
           </table>
@@ -154,6 +157,7 @@ export default {
       if (getto === 'CategoryID') return 'รหัสหมวดหมู่'
       if (getto === 'publisher') return 'สำนักพิมพ์'
       if (getto === 'author') return 'ผู้เขียน'
+      if (getto === 'rank') return 'อันดับ'
       return getto
     },
     bindValue: function (key, value) {
