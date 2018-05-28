@@ -1,5 +1,6 @@
 <template>
   <b-container v-if="!isLoggedIn">
+    <div id="div1">
     <b-row class="rowgg">
       <b-col>
         <h1 style ="margin-left: auto; margin-right: auto;">LOGIN</h1>
@@ -40,6 +41,7 @@
       </b-col>
       <b-col sm="0" md="1"/>
     </b-row>
+    </div>
   </b-container>
 </template>
 
@@ -106,5 +108,14 @@ export default {
 }
 .cbrow{
   margin-top: 12px;
+}
+#div1
+{
+  animation-name: hiding;
+  animation-duration: 3s;
+}
+@keyframes hiding {
+  from {opacity: 0.0;}
+  to {opacity: 1.0;}
 }
 </style>

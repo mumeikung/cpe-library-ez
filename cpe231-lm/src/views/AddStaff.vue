@@ -1,5 +1,6 @@
 <template>
   <b-container>
+    <div id="div1">
     <h1>Add Staff</h1>
     <b-row class="rowmar">
       <b-col>
@@ -114,6 +115,7 @@
     <b-modal ref="successModal" hide-header ok-only ok-title="ปิด" centered>
       เพิ่มพนักงานเรียบร้อย
     </b-modal>
+    </div>
   </b-container>
 </template>
 
@@ -197,4 +199,13 @@ export default {
     margin-top: 6px;
     margin-bottom: 6px;
   }
+  #div1
+{
+  animation-name: hiding;
+  animation-duration: 3s;
+}
+@keyframes hiding {
+  from {opacity: 0.0;}
+  to {opacity: 1.0;}
+}
 </style>
