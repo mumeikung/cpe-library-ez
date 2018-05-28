@@ -741,10 +741,10 @@ exports.analysis1057_2 =  functions.https.onCall((data, context) => {
   let count = {}
   return firestore.collection('borrow').get().then((docs) => {
     docs.forEach((doc => {
-      temp[doc.data().ItemID] = 0
+      temp[doc.data().StockID] = 0
     }))
     docs.forEach((doc => {
-      temp[doc.data().ItemID] += 1
+      temp[doc.data().StockID] += 1
     }))
     return firestore.collection('stock').get()
   }).then((docs) => {
@@ -773,11 +773,11 @@ exports.analysis1057_3 = functions.https.onCall((data, context) => {
         if(doc.data().ReturnTime !== 'not yet'){
           doc.data().ReturnTime.setHours(0,0,0,0)
           doc.data().BorrowTime.setHours(0,0,0,0)
-          temp[doc.data().ItemID] = 0
+          temp[doc.data().StockID] = 0
         }
       })
       docs.forEach(doc => {
-        if(doc.data().ReturnTime !== 'not yet') temp[doc.data().ItemID] += (doc.data().ReturnTime - doc.data().BorrowTime)/(24*60*60*1000)
+        if(doc.data().ReturnTime !== 'not yet') temp[doc.data().StockID] += (doc.data().ReturnTime - doc.data().BorrowTime)/(24*60*60*1000)
       })
       return firestore.collection('stock').get()
     }).then((docs) => {
