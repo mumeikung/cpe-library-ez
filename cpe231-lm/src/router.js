@@ -6,6 +6,12 @@ import Login from './views/Login.vue'
 import AddBook from './views/AddBook.vue'
 import EditBook from './views/EditBook.vue'
 import Search from './views/Search.vue'
+import Borrow from './views/Borrow.vue'
+import Return from './views/Return.vue'
+import AddMember from './views/AddMember.vue'
+import EditMember from './views/EditMember.vue'
+import AddStaff from './views/AddStaff.vue'
+import Info from './views/Info.vue'
 
 Vue.use(Router)
 
@@ -41,6 +47,36 @@ export default new Router({
       name: 'EditBook',
       component: EditBook,
       props: true
+    },
+    {
+      path: '/borrow',
+      name: 'Borrow',
+      component: Borrow
+    },
+    {
+      path: '/return',
+      name: 'Return',
+      component: Return
+    },
+    {
+      path: '/editmember',
+      name: 'EditMember',
+      component: EditMember
+    },
+    {
+      path: '/addmember',
+      name: 'AddMember',
+      component: AddMember
+    },
+    {
+      path: '/addstaff',
+      name: 'AddStaff',
+      component: AddStaff
+    },
+    {
+      path: '/info',
+      name: 'Info',
+      component: Info
     }
   ]
 })

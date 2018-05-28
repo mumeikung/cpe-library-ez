@@ -1,6 +1,6 @@
 <template>
   <b-container>
-    <h1>Add Member</h1>
+    <h1>Add Staff</h1>
     <b-row class="rowmar">
       <b-col>
         <b-row>
@@ -74,19 +74,6 @@
       <b-col>
         <b-row>
           <b-col class="text-left">
-            Phone  :
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col>
-            <b-form-input v-model="phone" type="tel" :disabled="loading">
-            </b-form-input>
-          </b-col>
-        </b-row>
-      </b-col>
-      <b-col>
-        <b-row>
-          <b-col class="text-left">
             Date of Birth  :
           </b-col>
         </b-row>
@@ -111,35 +98,6 @@
         </b-row>
       </b-col>
     </b-row>
-    <b-row class="rowmar">
-      <b-col>
-        <b-row>
-          <b-col class="text-left">
-            Borrow Level  :
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col>
-            <b-form-input v-model="borrowLevel" type="range" min="1" max="127" :disabled="loading">
-            </b-form-input>
-            {{borrowLevel}}
-          </b-col>
-        </b-row>
-      </b-col>
-      <b-col>
-        <b-row>
-          <b-col class="text-left">
-            Num Can Borrow  :
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col>
-            <b-form-input v-model="numCanBorrow" type="number" min="0" :disabled="loading">
-            </b-form-input>
-          </b-col>
-        </b-row>
-      </b-col>
-    </b-row>
     <b-row class="rowmar" v-if="errMsg !== '' && errMsg !== null">
       <b-col>
         <p class="text-danger">{{errMsg}}</p>
@@ -150,11 +108,11 @@
         <b-btn variant="danger" :disabled="loading" @click="clearField">Clear</b-btn>
       </b-col>
       <b-col>
-        <b-btn variant="success" :disabled="email === null || password === null || prefix === null || name === null || surname === null || dob === null || gender === null || phone === null || loading" @click="addMember">Add Member</b-btn>
+        <b-btn variant="success" :disabled="email === null || password === null || prefix === null || name === null || surname === null || dob === null || gender === null || loading" @click="addStaff">Add Staff</b-btn>
       </b-col>
     </b-row>
     <b-modal ref="successModal" hide-header ok-only ok-title="ปิด" centered>
-      เพิ่มสมาชิกเรียบร้อย
+      เพิ่มพนักงานเรียบร้อย
     </b-modal>
   </b-container>
 </template>
@@ -163,7 +121,7 @@
 import firebase from '@/firebase'
 
 export default {
-  name: 'AddMember',
+  name: 'AddStaff',
   data () {
     return {
       errMsg: '',
@@ -174,9 +132,6 @@ export default {
       surname: null,
       dob: null,
       gender: null,
-      phone: null,
-      numCanBorrow: 0,
-      borrowLevel: 1,
       loading: false,
       options: [
         {value: null, text: '--Select Gender--'},
@@ -195,7 +150,7 @@ export default {
     if (!this.$store.getters.isStaff) this.$router.push('/')
   },
   methods: {
-    addMember: function () {
+    addStaff: function () {
       console.log('add')
       this.loading = true
       const data = {
@@ -205,14 +160,11 @@ export default {
         name: this.name,
         surname: this.surname,
         dob: this.dob,
-        gender: this.gender,
-        phone: this.phone,
-        numCanBorrow: this.numCanBorrow.toString(),
-        borrowLevel: this.borrowLevel.toString()
+        gender: this.gender
       }
       console.log(data)
-      const addMember = firebase.functions().httpsCallable('addMember')
-      addMember(data).then(function (resp) {
+      const addStaff = firebase.functions().httpsCallable('addStaff')
+      addStaff(data).then(function (resp) {
         if (resp.data === 'success') {
           this.$refs.successModal.show()
           this.clearField()
@@ -234,9 +186,6 @@ export default {
       this.surname = null
       this.dob = null
       this.gender = null
-      this.phone = null
-      this.numCanBorrow = 0
-      this.borrowLevel = 1
       this.errMsg = ''
     }
   }

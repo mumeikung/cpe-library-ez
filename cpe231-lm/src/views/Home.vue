@@ -3,10 +3,10 @@
     <div id="w">WELCOME|</div>
     <b-col>
       <b-row>
-        <div id="L">LIBRARY EASY</div>
+        <div id="L">{{isLoggedIn ? displayName : 'LIBRARY EASY'}}</div>
       </b-row>
       <b-row>
-        <div id="j">A Database Final Project</div>
+        <div id="j">{{isLoggedIn ? 'TO LIBRARY EASY' : 'A Database Final Project'}}</div>
       </b-row>
     </b-col>
   </b-row>
@@ -14,7 +14,15 @@
 
 <script>
 export default {
-  name: 'home'
+  name: 'home',
+  computed: {
+    isLoggedIn: function () {
+      return this.$store.getters.isLoggedIn
+    },
+    displayName: function () {
+      return this.$store.getters.displayName
+    }
+  }
 }
 </script>
 

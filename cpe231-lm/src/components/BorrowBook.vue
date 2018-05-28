@@ -2,15 +2,22 @@
   <b-row>
     <b-col>
       <h1>Borrow</h1>
-      <b-row>
+      <b-container>
+        <b-row>
+          <b-col>
+            <b-input-group @keyup.enter="memberSubmit">
+              <b-form-input type="text" v-model="memberid" placeholder="Member ID" :disabled="memberData !== null || loading"/>
+              <b-input-group-append>
+                <b-btn @click="memberSubmit" :disabled="memberData !== null || memberid === null || memberid === '' || loading" variant="primary">Submit</b-btn>
+                <b-btn @click="memberCancel" :disabled="memberData === null || loading" variant="danger">Cancel</b-btn>
+              </b-input-group-append>
+            </b-input-group>
+          </b-col>
+        </b-row>
+      </b-container>
+      <b-row v-if="memberData !== null">
         <b-col>
-          <b-input-group @keyup.enter="memberSubmit">
-            <b-form-input type="text" v-model="memberid" placeholder="Member ID" :disabled="memberData !== null || loading"/>
-            <b-input-group-append>
-              <b-btn @click="memberSubmit" :disabled="memberData !== null || memberid === null || memberid === '' || loading" variant="primary">Submit</b-btn>
-              <b-btn @click="memberCancel" :disabled="memberData === null || loading" variant="danger">Cancel</b-btn>
-            </b-input-group-append>
-          </b-input-group>
+          <hr>
         </b-col>
       </b-row>
       <b-row v-if="memberData !== null">
@@ -20,16 +27,18 @@
               <h3>{{memberData.Prefix}} {{memberData.Name}} {{memberData.Surname}}</h3>
             </b-col>
           </b-row>
-          <b-row class="myRow">
-            <b-col>
-              <b-input-group @keyup.enter="stockAdd">
-                <b-form-input type="text" v-model="stockid" placeholder="Stock ID" :disabled="loading || borrowed"/>
-                <b-input-group-append>
-                  <b-btn @click="stockAdd" :disabled="stockid === null || stockid === '' || loading || borrowed" variant="primary">Add</b-btn>
-                </b-input-group-append>
-              </b-input-group>
-            </b-col>
-          </b-row>
+          <b-container>
+            <b-row class="myRow">
+              <b-col>
+                <b-input-group @keyup.enter="stockAdd">
+                  <b-form-input ref="stockBox" type="text" v-model="stockid" placeholder="Stock ID" :disabled="loading || borrowed"/>
+                  <b-input-group-append>
+                    <b-btn @click="stockAdd" :disabled="stockid === null || stockid === '' || loading || borrowed" variant="primary">Add</b-btn>
+                  </b-input-group-append>
+                </b-input-group>
+              </b-col>
+            </b-row>
+          </b-container>
           <b-row class="myRow">
             <b-col>
               <table class="table">
@@ -141,6 +150,7 @@ export default {
       }
     },
     memberSubmit: function () {
+      if (this.memberid === null || this.memberid === '') return ''
       this.loading = true
       this.errMsg = ''
       const getMemberData = firebase.functions().httpsCallable('getMemberData')
@@ -165,8 +175,10 @@ export default {
       this.stockid = null
       this.borrowList = []
       this.borrowed = false
+      this.errMsg = ''
     },
     stockAdd: function () {
+      if (this.stockid === null || this.stockid === '') return ''
       this.loading = true
       this.errMsg = ''
       const getBorrowBookInfo = firebase.functions().httpsCallable('getBorrowBookInfo')

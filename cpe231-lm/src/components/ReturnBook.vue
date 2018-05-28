@@ -8,6 +8,7 @@
             <b-form-input type="text" v-model="stockid" placeholder="Stock ID" :disabled="loading"/>
             <b-input-group-append>
               <b-btn @click="returnBook" :disabled="stockid === null || stockid === '' || loading" variant="primary">Return</b-btn>
+              <b-btn @click="clearFine" :disabled="loading" variant="danger">Clear</b-btn>
             </b-input-group-append>
           </b-input-group>
         </b-col>
@@ -15,6 +16,11 @@
       <b-row class="myRow">
         <b-col>
           <h3>{{msg}}</h3>
+        </b-col>
+      </b-row>
+      <b-row class="myRow" v-if="FineTotal > 0">
+        <b-col>
+          <h4>ค่าปรับทั้งหมด {{FineTotal}} บาท</h4>
         </b-col>
       </b-row>
     </b-col>
@@ -30,7 +36,8 @@ export default {
     return {
       loading: false,
       stockid: null,
-      msg: ''
+      msg: '',
+      FineTotal: 0
     }
   },
   methods: {
@@ -43,13 +50,23 @@ export default {
         if (resp.data.message !== undefined) {
           this.msg = resp.data.message
         } else if (resp.data.status === 'success') {
-          this.msg = 'คืนเรียบร้อย ค่าปรับทั้งหมด ' + resp.data.fine + ' บาท'
+          if (resp.data.fine <= 0) {
+            this.msg = 'คืนเรียบร้อย (ไม่มีค่าปรับ)'
+          } else {
+            this.msg = 'คืนเรียบร้อย ค่าปรับ ' + resp.data.fine + ' บาท'
+            this.FineTotal += resp.data.fine
+          }
           this.stockid = null
         } else {
           this.msg = 'คืนไม่สำเร็จ'
         }
         this.loading = false
       }.bind(this))
+    },
+    clearFine: function () {
+      this.FineTotal = 0
+      this.msg = ''
+      this.stockid = null
     }
   }
 }

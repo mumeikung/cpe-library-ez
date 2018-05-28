@@ -1,32 +1,20 @@
 <template>
   <b-container>
-    <h1>Add Member</h1>
+    <h1>Edit Member</h1>
     <b-row class="rowmar">
       <b-col>
-        <b-row>
-          <b-col class="text-left">
-            Email  :
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col>
-            <b-form-input v-model="email" type="email" :disabled="loading">
-            </b-form-input>
-          </b-col>
-        </b-row>
+        <b-input-group @keyup.enter="memberSubmit">
+          <b-form-input type="text" v-model="memberid" placeholder="Member ID" :disabled="memberData !== null || loading"/>
+          <b-input-group-append>
+            <b-btn @click="memberSubmit" :disabled="memberData !== null || memberid === null || memberid === '' || loading" variant="primary">Submit</b-btn>
+            <b-btn @click="clearField" :disabled="memberData === null || loading" variant="danger">Cancel</b-btn>
+          </b-input-group-append>
+        </b-input-group>
       </b-col>
+    </b-row>
+    <b-row>
       <b-col>
-        <b-row>
-          <b-col class="text-left">
-            Password  :
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col>
-            <b-form-input v-model="password" type="password" :disabled="loading">
-            </b-form-input>
-          </b-col>
-        </b-row>
+        <hr>
       </b-col>
     </b-row>
     <b-row class="rowmar">
@@ -38,7 +26,7 @@
         </b-row>
         <b-row>
           <b-col>
-            <b-form-select v-model="prefix" :options="options1" class="mb-3" :disabled="loading">
+            <b-form-select v-model="prefix" :options="options1" class="mb-3" :disabled="loading || memberData === null">
             </b-form-select>
           </b-col>
         </b-row>
@@ -51,7 +39,7 @@
         </b-row>
         <b-row>
           <b-col>
-            <b-form-input v-model="name" type="text" :disabled="loading">
+            <b-form-input v-model="name" type="text" :disabled="loading || memberData === null">
             </b-form-input>
           </b-col>
         </b-row>
@@ -64,7 +52,7 @@
         </b-row>
         <b-row>
           <b-col>
-            <b-form-input v-model="surname" type="text" :disabled="loading">
+            <b-form-input v-model="surname" type="text" :disabled="loading || memberData === null">
             </b-form-input>
           </b-col>
         </b-row>
@@ -79,7 +67,7 @@
         </b-row>
         <b-row>
           <b-col>
-            <b-form-input v-model="phone" type="tel" :disabled="loading">
+            <b-form-input v-model="phone" type="tel" :disabled="loading || memberData === null">
             </b-form-input>
           </b-col>
         </b-row>
@@ -92,7 +80,7 @@
         </b-row>
         <b-row>
           <b-col>
-            <b-form-input v-model="dob" type="date" :disabled="loading">
+            <b-form-input v-model="dob" type="date" :disabled="loading || memberData === null">
             </b-form-input>
           </b-col>
         </b-row>
@@ -105,7 +93,7 @@
         </b-row>
         <b-row>
           <b-col>
-            <b-form-select v-model="gender" :options="options" class="mb-3" :disabled="loading">
+            <b-form-select v-model="gender" :options="options" class="mb-3" :disabled="loading || memberData === null">
             </b-form-select>
           </b-col>
         </b-row>
@@ -120,7 +108,7 @@
         </b-row>
         <b-row>
           <b-col>
-            <b-form-input v-model="borrowLevel" type="range" min="1" max="127" :disabled="loading">
+            <b-form-input v-model="borrowLevel" type="range" min="1" max="127" :disabled="loading || memberData === null">
             </b-form-input>
             {{borrowLevel}}
           </b-col>
@@ -134,7 +122,7 @@
         </b-row>
         <b-row>
           <b-col>
-            <b-form-input v-model="numCanBorrow" type="number" min="0" :disabled="loading">
+            <b-form-input v-model="numCanBorrow" type="number" min="0" :disabled="loading || memberData === null">
             </b-form-input>
           </b-col>
         </b-row>
@@ -147,14 +135,11 @@
     </b-row>
     <b-row class="rowmar">
       <b-col>
-        <b-btn variant="danger" :disabled="loading" @click="clearField">Clear</b-btn>
-      </b-col>
-      <b-col>
-        <b-btn variant="success" :disabled="email === null || password === null || prefix === null || name === null || surname === null || dob === null || gender === null || phone === null || loading" @click="addMember">Add Member</b-btn>
+        <b-btn variant="success" :disabled="prefix === null || name === null || surname === null || dob === null || gender === null || phone === null || loading" @click="editMember">Save</b-btn>
       </b-col>
     </b-row>
     <b-modal ref="successModal" hide-header ok-only ok-title="ปิด" centered>
-      เพิ่มสมาชิกเรียบร้อย
+      แก้ไขข้อมูลสมาชิกเรียบร้อย
     </b-modal>
   </b-container>
 </template>
@@ -166,9 +151,9 @@ export default {
   name: 'AddMember',
   data () {
     return {
+      memberid: null,
+      memberData: null,
       errMsg: '',
-      email: null,
-      password: null,
       prefix: null,
       name: null,
       surname: null,
@@ -195,12 +180,39 @@ export default {
     if (!this.$store.getters.isStaff) this.$router.push('/')
   },
   methods: {
-    addMember: function () {
+    memberSubmit: function () {
+      if (this.memberid === null || this.memberid === '') return ''
+      this.loading = true
+      this.errMsg = ''
+      const getMemberData = firebase.functions().httpsCallable('getMemberData')
+      getMemberData({uid: this.memberid}).then(function (resp) {
+        console.log(resp.data)
+        if (resp.data.message === undefined) {
+          this.memberData = resp.data
+          this.prefix = resp.data.Prefix
+          this.name = resp.data.Name
+          this.surname = resp.data.Surname
+          this.dob = resp.data.DOB
+          this.gender = resp.data.Gender
+          this.phone = resp.data.Phone
+          this.numCanBorrow = resp.data.NumCanBorrow
+          this.borrowLevel = resp.data.BorrowLevel
+        } else {
+          this.memberData = null
+          this.errMsg = resp.data.message
+        }
+        this.loading = false
+      }.bind(this)).catch(function (error) {
+        console.error(error)
+        this.memberData = null
+        this.loading = false
+      }.bind(this))
+    },
+    editMember: function () {
       console.log('add')
       this.loading = true
       const data = {
-        email: this.email,
-        password: this.password,
+        uid: this.memberid,
         prefix: this.prefix,
         name: this.name,
         surname: this.surname,
@@ -211,8 +223,8 @@ export default {
         borrowLevel: this.borrowLevel.toString()
       }
       console.log(data)
-      const addMember = firebase.functions().httpsCallable('addMember')
-      addMember(data).then(function (resp) {
+      const editMember = firebase.functions().httpsCallable('editMember')
+      editMember(data).then(function (resp) {
         if (resp.data === 'success') {
           this.$refs.successModal.show()
           this.clearField()
@@ -227,8 +239,6 @@ export default {
       }.bind(this))
     },
     clearField: function () {
-      this.email = null
-      this.password = null
       this.prefix = null
       this.name = null
       this.surname = null
@@ -238,6 +248,8 @@ export default {
       this.numCanBorrow = 0
       this.borrowLevel = 1
       this.errMsg = ''
+      this.memberid = null
+      this.memberData = null
     }
   }
 }
