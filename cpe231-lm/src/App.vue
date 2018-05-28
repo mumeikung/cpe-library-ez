@@ -24,6 +24,10 @@
               <b-dropdown-item v-if="isStaff" @click="$router.push('/editmember')">Edit Member</b-dropdown-item>
               <b-dropdown-divider v-if="isStaff"/>
               <b-dropdown-item v-if="isStaff" @click="$router.push('/addstaff')">Add Staff</b-dropdown-item>
+              <b-dropdown-divider v-if="isStaff"/>
+              <b-dropdown-item v-if="isStaff" @click="$router.push('/check')">Check</b-dropdown-item>
+              <b-dropdown-divider v-if="isStaff"/>
+              <b-dropdown-item v-if="isStaff" @click="$router.push('/analysis')">Analysis</b-dropdown-item>
             </b-nav-item-dropdown>
           </li>
           <li class="nav-item">

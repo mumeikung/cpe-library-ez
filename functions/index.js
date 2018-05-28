@@ -741,9 +741,9 @@ exports.getMemberData = functions.https.onCall((data, context) => {
   }
 })
 
-
 exports.checkIn = functions.https.onCall((data, context) => {
   if(context.auth !== null){
+    if (typeof data.uid !== 'string') return {message: 'uid-not-read'}
     return usersFS.doc(data.uid).get().then((doc) => {
       if(doc.exists) return firestore.collection('checkinout').where('uid', '==', data.uid).where('TimeOut', '==', null).get()
       else return {message:'user-not-exist'}
@@ -753,14 +753,19 @@ exports.checkIn = functions.https.onCall((data, context) => {
     }).then((doc) => {
       if(typeof doc.message !== 'undefined') return doc
       if(doc.size === 0){
-        firestore.collection('checkinout').add({
-            TimeIn: new Date(),
-            TimeOut: null,
-            uid: data.uid
-          })
-          return 'success'
+        return firestore.collection('checkinout').add({
+          TimeIn: new Date(),
+          TimeOut: null,
+          uid: data.uid
+        })
       }
-      else return 'you-already-check-in'
+      else return {message: 'you-already-check-in'}
+    }).catch(error => {
+      console.error(error)
+      return error
+    }).then((doc) => {
+      if(typeof doc.message !== 'undefined') return doc
+      return 'success'
     }).catch(error => {
       console.error(error)
       return error
@@ -773,6 +778,7 @@ exports.checkIn = functions.https.onCall((data, context) => {
 
 exports.checkOut = functions.https.onCall((data, context) => {
   if(context.auth !== null){
+    if (typeof data.uid !== 'string') return {message: 'uid-not-read'}
     return usersFS.doc(data.uid).get().then((doc) => {
       if(doc.exists) return firestore.collection('checkinout').where('uid', '==', data.uid).where('TimeOut', '==', null).get()
       else return {message:'user-not-exist'}
@@ -782,12 +788,17 @@ exports.checkOut = functions.https.onCall((data, context) => {
     }).then((doc) => {
       if(typeof doc.message !== 'undefined') return doc
       if(doc.size > 0){
-        doc.docs[0].ref.update({
+        return doc.docs[0].ref.update({
           TimeOut: new Date()
         })
-        return 'success'
       }
-      return 'not-check-in-yet'
+      return {message:'not-check-in-yet'}
+    }).catch(error => {
+      console.error(error)
+      return error
+    }).then((doc) => {
+      if(typeof doc.message !== 'undefined') return doc
+      return 'success'
     }).catch(error => {
       console.error(error)
       return error

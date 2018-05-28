@@ -5,7 +5,7 @@ import 'firebase/functions'
 
 const config = {
   apiKey: 'AIzaSyBCb7LN69EliXJcAcrEk5Dwrnsy43bhp20',
-  authDomain: 'cpe231-library-management.firebaseapp.com',
+  authDomain: 'cpe231.ticketez.me',
   databaseURL: 'https://cpe231-library-management.firebaseio.com',
   projectId: 'cpe231-library-management',
   storageBucket: 'cpe231-library-management.appspot.com',

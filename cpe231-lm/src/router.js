@@ -12,6 +12,8 @@ import AddMember from './views/AddMember.vue'
 import EditMember from './views/EditMember.vue'
 import AddStaff from './views/AddStaff.vue'
 import Info from './views/Info.vue'
+import Check from './views/Check.vue'
+import Analysis from './views/Analysis.vue'
 
 Vue.use(Router)
 
@@ -77,6 +79,16 @@ export default new Router({
       path: '/info',
       name: 'Info',
       component: Info
+    },
+    {
+      path: '/check',
+      name: 'Check',
+      component: Check
+    },
+    {
+      path: '/analysis',
+      name: 'Analysis',
+      component: Analysis
     }
   ]
 })
