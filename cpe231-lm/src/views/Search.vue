@@ -1,5 +1,6 @@
 <template>
   <b-container fluid>
+    <div id="div1">
     <b-container>
       <b-row>
         <b-col>
@@ -95,6 +96,7 @@
         </b-modal>
       </b-col>
     </b-row>
+    </div>
   </b-container>
 </template>
 
@@ -203,5 +205,14 @@ export default {
 <style>
 .myP {
   margin-bottom: 0px;
+}
+#div1
+{
+  animation-name: hiding;
+  animation-duration: 2s;
+}
+@keyframes hiding {
+  from {opacity: 0.0;}
+  to {opacity: 1.0;}
 }
 </style>

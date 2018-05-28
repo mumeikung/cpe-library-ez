@@ -1,5 +1,6 @@
 <template>
   <b-container fluid>
+
     <b-container>
       <b-row class="anime" v-if="isStaff">
         <b-col cols="4">

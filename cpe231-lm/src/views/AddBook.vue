@@ -1,5 +1,6 @@
 <template>
   <b-container fluid>
+    <div id="div1">
     <div class="row rowmar">
       <b-col sm="3"></b-col>
       <b-col sm="6">
@@ -168,6 +169,7 @@
       Failed: {{failed}}</p>
       <p v-else>{{errMsg}}</p>
     </b-modal>
+    </div>
   </b-container>
 </template>
 
@@ -177,6 +179,16 @@
   margin-right: 0px;
   margin-bottom: 12px;
   padding: 0px;
+  
+}
+#div1
+{
+  animation-name: hiding;
+  animation-duration: 3s;
+}
+@keyframes hiding {
+  from {opacity: 0.0;}
+  to {opacity: 1.0;}
 }
 </style>
 

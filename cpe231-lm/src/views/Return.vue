@@ -1,6 +1,8 @@
 <template>
   <b-container>
+    <div id="div1">
     <return-book/>
+    </div>
   </b-container>
 </template>
 
@@ -19,5 +21,13 @@ export default {
 </script>
 
 <style>
-
+#div1
+{
+  animation-name: hiding;
+  animation-duration: 3s;
+}
+@keyframes hiding {
+  from {opacity: 0.0;}
+  to {opacity: 1.0;}
+}
 </style>
