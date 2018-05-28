@@ -22,18 +22,31 @@
   font-size: 6.5vw;
   letter-spacing: 8px;
   margin-top: 0px;
-  margin-left: 8vw;
+  margin-left: 10vw;
+  animation: mymove 5s;
+  animation-timing-function: ease;
+  position: relative;
 }
 #L {
-  font-family:'Kanit thin', sans-serif;
+  font-family:'Kanit', sans-serif;
   font-size: 2.4vw;
   margin-top: 2vw;
   margin-left: 0px;
+  animation-name: down;
+  animation-duration: 5s;
+  animation-fill-mode: forwards;
+  position: relative;
 }
 #j {
   font-family:'Kanit', sans-serif;
-  font-size: 2vw;
+  font-size: 2.4vw;
   margin-top: 0px;
   margin-left: 0px;
+  animation-name: down;
+  animation-duration: 5s;
+  animation-fill-mode: forwards;
+  position: relative;
 }
+
+
 </style>

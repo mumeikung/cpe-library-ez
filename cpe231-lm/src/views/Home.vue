@@ -39,6 +39,7 @@ export default {
   margin-left: 10vw;
   animation: mymove 5s;
   animation-timing-function: ease;
+  position: relative;
 }
 #L {
   font-family:'Kanit', sans-serif;
@@ -48,6 +49,7 @@ export default {
   animation-name: down;
   animation-duration: 5s;
   animation-fill-mode: forwards;
+  position: relative;
 }
 #j {
   font-family:'Kanit thin', sans-serif;
@@ -57,6 +59,7 @@ export default {
   animation-name: down;
   animation-duration: 5s;
   animation-fill-mode: forwards;
+  position: relative;
 }
 #div1
 {
