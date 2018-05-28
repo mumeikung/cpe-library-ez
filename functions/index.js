@@ -740,3 +740,296 @@ exports.getMemberData = functions.https.onCall((data, context) => {
     message: 'auth-error'
   }
 })
+
+exports.analysis1057_1 = functions.https.onCall((data, context) => {
+  return firestore.collection('borrow').get().then((docs) => {
+    let count = {}
+    let result = []
+    docs.forEach((doc) => {
+      if(count[doc.data().BorrowTime.getFullYear().toString()] === undefined) count[doc.data().BorrowTime.getFullYear().toString()] = {}
+      count[doc.data().BorrowTime.getFullYear().toString()][doc.data().BorrowTime.getMonth().toString()] = 0
+    })
+    docs.forEach((doc) => {
+      count[doc.data().BorrowTime.getFullYear().toString()][doc.data().BorrowTime.getMonth().toString()] += 1
+    })
+    for(let y in count){
+      let temp = count[y]
+      for(let m in temp){
+        result.push({year: y, month: m, count: count[y][m]})
+      }
+    }
+    result = _.orderBy(result, 'count', 'desc')
+    return result
+  })
+})
+
+exports.analysis1057_2 =  functions.https.onCall((data, context) => {
+  let temp = {}
+  let count = {}
+  return firestore.collection('borrow').get().then((docs) => {
+    docs.forEach((doc => {
+      temp[doc.data().StockID] = 0
+    }))
+    docs.forEach((doc => {
+      temp[doc.data().StockID] += 1
+    }))
+    return firestore.collection('stock').get()
+  }).then((docs) => {
+    docs.forEach(doc => {
+      count[doc.data().ItemID] = 0
+    })
+    docs.forEach(doc => {
+      count[doc.data().ItemID] += 1
+    })
+    return firestore.collection('book').get()
+  }).then((docs) => {
+    let result = []
+    docs.forEach(doc => {
+      result.push({itemID: doc.id, bookName: doc.data().Name, categoryID: doc.data().CategoryID, count: count[doc.id]})
+    })
+    result = _.orderBy(result, 'count', 'desc')
+    return result.slice(0,9)
+  })
+})
+
+exports.analysis1057_3 = functions.https.onCall((data, context) => {
+    let temp = {}
+    let count = {}
+    return firestore.collection('borrow').get().then((docs) => {
+      docs.forEach(doc => {
+        if(doc.data().ReturnTime !== 'not yet'){
+          doc.data().ReturnTime.setHours(0,0,0,0)
+          doc.data().BorrowTime.setHours(0,0,0,0)
+          temp[doc.data().StockID] = 0
+        }
+      })
+      docs.forEach(doc => {
+        if(doc.data().ReturnTime !== 'not yet') temp[doc.data().StockID] += (doc.data().ReturnTime - doc.data().BorrowTime)/(24*60*60*1000)
+      })
+      return firestore.collection('stock').get()
+    }).then((docs) => {
+      docs.forEach(doc => {
+        count[doc.data().ItemID] = 0
+      })
+      docs.forEach(doc => {
+        count[doc.data().ItemID] += temp[doc.id]
+      })
+      return firestore.collection('book').get()
+    }).then((docs) => {
+      let result = []
+      docs.forEach(doc => {
+        if(count[doc.id]) result.push({itemID: doc.id, bookName: doc.data().Name, categoryID: doc.data().CategoryID, count: count[doc.id]})
+      })
+      result = _.orderBy(result, 'count', 'desc')
+      return result.slice(0,9)
+    })
+})
+
+exports.analysis1070_1_in = functions.https.onCall((data, context) => {
+  return firestore.collection('checkinout').get().then((docs) => {
+    let count = {}
+    let result = []
+    docs.forEach(doc => {
+      count[doc.data().TimeIn.getHours().toString()] = 0
+    })
+    docs.forEach(doc => {
+      count[doc.data().TimeIn.getHours().toString()] += 1
+    })
+    for(let h in count){
+      result.push({hourIn: h, count: count[h]})
+    }
+    result = _.orderBy(result, 'count', 'desc')
+    return result.slice(0,9)
+  })
+})
+
+exports.analysis1070_1_out = functions.https.onCall((data, context) => {
+  return firestore.collection('checkinout').get().then((docs) => {
+    let count = {}
+    let result = []
+    docs.forEach(doc => {
+      count[doc.data().TimeOut.getHours().toString()] = 0
+    })
+    docs.forEach(doc => {
+      count[doc.data().TimeOut.getHours().toString()] += 1
+    })
+    for(let h in count){
+      result.push({hourOut: h, count: count[h]})
+    }
+    result = _.orderBy(result, 'count', 'desc')
+    return result.slice(0,9)
+  })
+})
+
+exports.analysis1070_2 = functions.https.onCall((data, context) => {
+  return firestore.collection('checkinout').get().then((docs) => {
+    let count = {}
+    let result = []
+    docs.forEach(doc => {
+      if(count[doc.data().TimeIn.getFullYear().toString()] === undefined) count[doc.data().TimeIn.getFullYear().toString()] = {}
+      if(count[doc.data().TimeIn.getFullYear().toString()][doc.data().TimeIn.getMonth().toString()] === undefined) count[doc.data().TimeIn.getFullYear().toString()][doc.data().TimeIn.getMonth().toString()] = {}
+      count[doc.data().TimeIn.getFullYear().toString()][doc.data().TimeIn.getMonth().toString()][doc.data().TimeIn.getDate().toString()] = 0
+    })
+    docs.forEach(doc => {
+      count[doc.data().TimeIn.getFullYear().toString()][doc.data().TimeIn.getMonth().toString()][doc.data().TimeIn.getDate().toString()] += 1
+    })
+    for(let y in count){
+      let tempYear = count[y]
+      for(let m in tempYear){
+        let tempMonth = tempYear[m]
+        for(let d in tempMonth){
+          result.push({year: y, month: m, day: d, count: count[y][m][d]})
+        }
+      }
+    }
+    result = _.orderBy(result, 'count', 'desc')
+    return result.slice(0,9)
+  })
+})
+
+exports.analysis1070_3 = functions.https.onCall((data, context) => {
+  return firestore.collection('checkinout').get().then((docs) => {
+    let min = {}
+    let result = []
+    docs.forEach(doc => {
+      min[doc.data().uid] = 0
+    })
+    docs.forEach(doc => {
+      min[doc.data().uid] += (doc.data().TimeOut.getTime() - doc.data().TimeIn.getTime())/60000 //to min
+    })
+    for(let id in min){
+      result.push({uid: id, min: min[id]})
+    }
+    result = _.orderBy(result, 'min', 'desc')
+    return result.slice(0,9)
+  })
+})
+
+exports.analysis1085_1 = functions.https.onCall((data, context) => {
+  return firestore.collection('borrow').get().then((docs) => {
+    let sum = {}
+    let result = []
+    docs.forEach(doc => {
+      if(doc.data().ReturnTime !== 'not yet'){
+        if(sum[doc.data().ReturnTime.getFullYear().toString()] === undefined) sum[doc.data().ReturnTime.getFullYear().toString()] = {}
+        sum[doc.data().ReturnTime.getFullYear().toString()][doc.data().ReturnTime.getMonth().toString()] = 0
+      }
+    })
+    docs.forEach(doc => {
+      if(doc.data().ReturnTime !== 'not yet') sum[doc.data().ReturnTime.getFullYear().toString()][doc.data().ReturnTime.getMonth().toString()] += doc.data().Fine
+    })
+    for(let y in sum){
+      let temp = sum[y]
+      for(let m in temp){
+        result.push({year: y, month: m, sumFine: sum[y][m]})
+      }
+    }
+    result = _.orderBy(result, 'sumFine', 'desc')
+    return result
+  })
+})
+
+exports.analysis1085_2 = functions.https.onCall((data, context) => {
+  return firestore.collection('users').get().then((docs) => {
+    let count = {}
+    let today = new Date()
+    let result = []
+    let a = null
+    let b = null
+    docs.forEach(doc => {
+      b = new Date(doc.data().DOB)
+      a = today.getFullYear() - b.getFullYear()
+      if(count[a.toString()] === undefined) count[a.toString()] = {}
+      count[a.toString()][doc.data().Gender] = 0
+    })
+    docs.forEach(doc => {
+      b = new Date(doc.data().DOB)
+      a = today.getFullYear() - b.getFullYear()
+      count[a.toString()][doc.data().Gender] += 1
+    })
+    for(let y in count){
+      let temp = count[y]
+      for(let g in temp){
+        result.push({age: y, gender: g, count: count[y][g]})
+      }
+    }
+    result = _.orderBy(result, 'count', 'desc')
+    return result.slice(0,9)
+  })
+})
+
+exports.analysis1085_3 = functions.https.onCall((data, context) => {
+  return firestore.collection('stock').get().then((docs) => {
+    let count = {}
+    let result = []
+    docs.forEach(doc => {
+      count[doc.data().RegisteredTime.getMonth().toString()] = 0
+    })
+    docs.forEach(doc => {
+      count[doc.data().RegisteredTime.getMonth().toString()] += 1
+    })
+    for(let m in count){
+      result.push({month: m, count: count[m]})
+    }
+    result = _.orderBy(result, 'count', 'desc')
+    return result.slice(0,9)
+  })
+})
+
+exports.analysis1093_1 = functions.https.onCall((data, context) => {
+  return firestore.collection('book').get().then((docs) => {
+    let count = {}
+    let result = []
+    docs.forEach(doc => {
+      count[doc.data().Publisher] = 0
+    })
+    docs.forEach(doc => {
+      count[doc.data().Publisher] += 1
+    })
+    for(let p in count){
+      result.push({Publisher: p, count: count[p]})
+    }
+    result = _.orderBy(result, 'count', 'desc')
+    return result.slice(0,9)
+  })
+})
+
+exports.analysis1093_2 = functions.https.onCall((data, context) => {
+  let count = {}
+  return firestore.collection('book').get().then((docs) => {
+    docs.forEach(doc => {
+      count[doc.data().CategoryID] = 0
+    })
+    docs.forEach(doc => {
+      count[doc.data().CategoryID] += 1
+    })
+    return firestore.collection('category').get()
+  }).then((docs) => {
+    let result = []
+    docs.forEach(doc => {
+      if(count[doc.id] !== undefined) result.push({CategoryID: doc.id, Description: doc.data().description, count: count[doc.id]})
+    })
+    result = _.orderBy(result, 'count', 'desc')
+    return result.slice(0,9)
+  })
+})
+
+exports.analysis1093_3 = functions.https.onCall((data, context) => {
+  let count = {}
+  return firestore.collection('stock').get().then((docs) => {
+    docs.forEach(doc => {
+      count[doc.data().ItemID] = 0
+    })
+    docs.forEach(doc => {
+      count[doc.data().ItemID] += 1
+    })
+    return firestore.collection('book').get()
+  }).then((docs) => {
+    let result = []
+      docs.forEach(doc => {
+        if(count[doc.id] !== undefined) result.push({itemID: doc.id, bookName: doc.data().Name, publisher: doc.data().Publisher, author: doc.data().Author, count: count[doc.id]})
+      })
+      result = _.orderBy(result, 'count', 'desc')
+      return result.slice(0,9)
+  })
+})
