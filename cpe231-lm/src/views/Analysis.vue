@@ -3,13 +3,13 @@
     <b-btn @click="loopTEST" variant="danger" :disabled="loading" style="margin-bottom: 24px;">Load All Analysis</b-btn>
     <b-card>
       <b-row>
-        <b-col cols="6" v-for="val in list" :key="val.id" class="myRow">
+        <b-col sm="12" md="6" v-for="val in list" :key="val.id" class="myRow">
           <b-card>
-            <b-row v-for="opt in val.opts" :key="opt">
-              <b-col>
-                <b-btn @click="getAnalysis(val.id, opt)" variant="primary" :disabled="loading">Load Analysis</b-btn>
+            <b-row v-for="opt in val.opts" :key="opt" class="myRow">
+              <b-col cols="2">
+                <b-btn @click="getAnalysis(val.id, opt)" variant="primary" :disabled="loading">Load</b-btn>
               </b-col>
-              <b-col>
+              <b-col cols="10" class="text-left">
                 {{name['s_' + val.id]['opt_' + opt]}}
               </b-col>
             </b-row>
@@ -17,18 +17,23 @@
         </b-col>
       </b-row>
       <hr>
-      <h2>{{nowName}}</h2>
+      <h4>{{nowName}}</h4>
+      <b-row v-if="loading">
+        <b-col>
+          <h5>Loading...</h5>
+        </b-col>
+      </b-row>
       <b-row v-if="result !== null" class="myRow">
         <b-col>
           <table class="table">
             <tr>
               <th v-for="(val, key) in result[0]" :key="'head_' + key">
-                {{key}}
+                {{getColName(key)}}
               </th>
             </tr>
             <tr v-for="(value, index) in result" :key="index">
               <td v-for="(myValue, myIndex) in value" :key="index + '_' + myIndex">
-                {{myValue}}
+                {{bindValue(myIndex, myValue)}}
               </td>
             </tr>
           </table>
@@ -60,7 +65,7 @@ export default {
         s_1085: {
           opt_1: 'ค่าปรับที่ได้รับต่อเดือน',
           opt_2: 'เพศและอายุของสมาชิก',
-          opt_3: 'เดือนที่นาเข้าหนังสือมากที่สุด'
+          opt_3: 'เดือนที่นำเข้าหนังสือมากที่สุด'
         },
         s_1093: {
           opt_1: 'Top publishers that have a lot of books in our library database',
@@ -104,6 +109,7 @@ export default {
       console.log(id, opt)
       this.loading = true
       this.nowName = this.name['s_' + id]['opt_' + opt]
+      this.result = null
       console.log(this.name['s_' + id]['opt_' + opt])
       if (this.results[id] !== undefined && this.results[id]['opt_' + opt] !== undefined) {
         this.result = this.results[id]['opt_' + opt]
@@ -122,6 +128,33 @@ export default {
           this.loading = false
         }.bind(this))
       }
+    },
+    getColName: function (getto) {
+      if (getto === 'year') return 'ปี'
+      if (getto === 'month') return 'เดือน'
+      if (getto === 'day') return 'วัน'
+      if (getto === 'min') return 'จำนวน (นาที)'
+      if (getto === 'count') return 'จำนวน'
+      if (getto === 'itemID') return 'Book ID'
+      if (getto === 'bookName') return 'ชื่อหนังสือ'
+      if (getto === 'categoryID') return 'รหัสหมวดหมู่'
+      if (getto === 'hourIn') return 'ชั่วโมง (เวลา)'
+      if (getto === 'hourOut') return 'ชั่วโมง (เวลา)'
+      if (getto === 'uid') return 'User ID'
+      if (getto === 'sumFine') return 'ค่าปรับรวม'
+      if (getto === 'age') return 'อายุ'
+      if (getto === 'gender') return 'เพศ'
+      if (getto === 'Publisher') return 'สำนักพิมพ์'
+      if (getto === 'Description') return 'หมวดหมู่'
+      if (getto === 'CategoryID') return 'รหัสหมวดหมู่'
+      if (getto === 'publisher') return 'สำนักพิมพ์'
+      if (getto === 'author') return 'ผู้เขียน'
+      return getto
+    },
+    bindValue: function (key, value) {
+      // bind
+      if (key === 'month') return parseInt(value) + 1
+      return value
     }
   }
 }

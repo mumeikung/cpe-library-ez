@@ -19,12 +19,13 @@
             <tr>
               <th>Title</th>
               <th>Author</th>
+              <th>Publisher</th>
               <th>ISBN</th>
               <th>Shelf</th>
               <th v-if="isStaff"></th>
             </tr>
             <tr v-if="searchCount <= 0">
-              <td :colspan="isStaff ? 5 : 4">
+              <td :colspan="isStaff ? 6 : 5">
                 <h4>ไม่พบหนังสือ</h4>
                 <b-button v-if="isStaff" @click="$router.push('/addbook')" variant="secondary" :disabled="loading">Add Book</b-button>
               </td>
@@ -32,6 +33,7 @@
             <tr v-else v-for="(val) in searchData" :key="val.id">
               <td>{{val.Name}}</td>
               <td>{{val.Author}}</td>
+              <td>{{val.Publisher}}</td>
               <td>{{val.ISBN}}</td>
               <td>{{val.ShelfID}}</td>
               <td v-if="isStaff">
@@ -41,8 +43,13 @@
                 </b-button-group>
               </td>
             </tr>
+            <tr v-if="searchCount > 0">
+              <td :colspan="isStaff ? 6 : 5">
+                <h5>พบ {{searchCount}} รายการ</h5>
+              </td>
+            </tr>
             <tr v-if="searchCount > 0 && isStaff">
-              <td :colspan="5">
+              <td :colspan="6">
                 <p>ไม่พบหนังสือที่จะเพิ่ม?</p>
                 <b-button v-if="isStaff" @click="$router.push('/addbook')" variant="secondary" :disabled="loading">Add Book</b-button>
               </td>
