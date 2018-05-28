@@ -827,6 +827,11 @@ exports.analysis1057_1 = functions.https.onCall((data, context) => {
       }
     }
     result = _.orderBy(result, 'count', 'desc')
+    let i = 1
+    result.forEach(doc => {
+      doc.rank = i
+      i++
+    })
     return result
   })
 })
@@ -856,6 +861,11 @@ exports.analysis1057_2 =  functions.https.onCall((data, context) => {
       result.push({itemID: doc.id, bookName: doc.data().Name, categoryID: doc.data().CategoryID, count: count[doc.id]})
     })
     result = _.orderBy(result, 'count', 'desc')
+    let i = 1
+    result.forEach(doc => {
+      doc.rank = i
+      i++
+    })
     return result.slice(0,9)
   })
 })
@@ -889,6 +899,11 @@ exports.analysis1057_3 = functions.https.onCall((data, context) => {
         if(count[doc.id]) result.push({itemID: doc.id, bookName: doc.data().Name, categoryID: doc.data().CategoryID, count: count[doc.id]})
       })
       result = _.orderBy(result, 'count', 'desc')
+      let i = 1
+      result.forEach(doc => {
+        doc.rank = i
+        i++
+      })
       return result.slice(0,9)
     })
 })
@@ -907,6 +922,11 @@ exports.analysis1070_1_in = functions.https.onCall((data, context) => {
       result.push({hourIn: h, count: count[h]})
     }
     result = _.orderBy(result, 'count', 'desc')
+    let i = 1
+    result.forEach(doc => {
+      doc.rank = i
+      i++
+    })
     return result.slice(0,9)
   })
 })
@@ -925,6 +945,11 @@ exports.analysis1070_1_out = functions.https.onCall((data, context) => {
       result.push({hourOut: h, count: count[h]})
     }
     result = _.orderBy(result, 'count', 'desc')
+    let i = 1
+    result.forEach(doc => {
+      doc.rank = i
+      i++
+    })
     return result.slice(0,9)
   })
 })
@@ -951,6 +976,11 @@ exports.analysis1070_2 = functions.https.onCall((data, context) => {
       }
     }
     result = _.orderBy(result, 'count', 'desc')
+    let i = 1
+    result.forEach(doc => {
+      doc.rank = i
+      i++
+    })
     return result.slice(0,9)
   })
 })
@@ -969,6 +999,11 @@ exports.analysis1070_3 = functions.https.onCall((data, context) => {
       result.push({uid: id, min: min[id]})
     }
     result = _.orderBy(result, 'min', 'desc')
+    let i = 1
+    result.forEach(doc => {
+      doc.rank = i
+      i++
+    })
     return result.slice(0,9)
   })
 })
@@ -993,6 +1028,11 @@ exports.analysis1085_1 = functions.https.onCall((data, context) => {
       }
     }
     result = _.orderBy(result, 'sumFine', 'desc')
+    let i = 1
+    result.forEach(doc => {
+      doc.rank = i
+      i++
+    })
     return result
   })
 })
@@ -1022,6 +1062,11 @@ exports.analysis1085_2 = functions.https.onCall((data, context) => {
       }
     }
     result = _.orderBy(result, 'count', 'desc')
+    let i = 1
+    result.forEach(doc => {
+      doc.rank = i
+      i++
+    })
     return result.slice(0,9)
   })
 })
@@ -1040,6 +1085,11 @@ exports.analysis1085_3 = functions.https.onCall((data, context) => {
       result.push({month: m, count: count[m]})
     }
     result = _.orderBy(result, 'count', 'desc')
+    let i = 1
+    result.forEach(doc => {
+      doc.rank = i
+      i++
+    })
     return result.slice(0,9)
   })
 })
@@ -1058,6 +1108,11 @@ exports.analysis1093_1 = functions.https.onCall((data, context) => {
       result.push({Publisher: p, count: count[p]})
     }
     result = _.orderBy(result, 'count', 'desc')
+    let i = 1
+    result.forEach(doc => {
+      doc.rank = i
+      i++
+    })
     return result.slice(0,9)
   })
 })
@@ -1078,6 +1133,11 @@ exports.analysis1093_2 = functions.https.onCall((data, context) => {
       if(count[doc.id] !== undefined) result.push({CategoryID: doc.id, Description: doc.data().description, count: count[doc.id]})
     })
     result = _.orderBy(result, 'count', 'desc')
+    let i = 1
+    result.forEach(doc => {
+      doc.rank = i
+      i++
+    })
     return result.slice(0,9)
   })
 })
@@ -1098,6 +1158,11 @@ exports.analysis1093_3 = functions.https.onCall((data, context) => {
         result.push({itemID: doc.id, bookName: doc.data().Name, publisher: doc.data().Publisher, author: doc.data().Author, count: count[doc.id]})
       })
       result = _.orderBy(result, 'count', 'desc')
+      let i = 1
+    result.forEach(doc => {
+      doc.rank = i
+      i++
+    })
       return result.slice(0,9)
   })
 })
