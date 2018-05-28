@@ -796,6 +796,7 @@ exports.checkOut = functions.https.onCall((data, context) => {
   else return {
     message: 'auth-error'
   }
+})
 
 exports.analysis1057_1 = functions.https.onCall((data, context) => {
   return firestore.collection('borrow').get().then((docs) => {
