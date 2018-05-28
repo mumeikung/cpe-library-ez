@@ -11,6 +11,7 @@
             <b-btn @click="clearField" :disabled="memberData === null || loading" variant="danger">Cancel</b-btn>
           </b-input-group-append>
         </b-input-group>
+        <b-form-radio-group v-model="type" :options="typeop" :disabled="memberData !== null || loading"/>
       </b-col>
     </b-row>
     <b-row>
@@ -165,6 +166,7 @@ export default {
       numCanBorrow: 0,
       borrowLevel: 1,
       loading: false,
+      type: 'uid',
       options: [
         {value: null, text: '--Select Gender--'},
         {value: 'Male', text: 'Male'},
@@ -175,6 +177,10 @@ export default {
         {value: 'Mr.', text: 'Mr.'},
         {value: 'Mrs.', text: 'Mrs.'},
         {value: 'Miss', text: 'Miss'}
+      ],
+      typeop: [
+        {value: 'uid', text: 'By User ID'},
+        {value: 'email', text: 'By Email'}
       ]
     }
   },
@@ -186,29 +192,57 @@ export default {
       if (this.memberid === null || this.memberid === '') return ''
       this.loading = true
       this.errMsg = ''
-      const getMemberData = firebase.functions().httpsCallable('getMemberData')
-      getMemberData({uid: this.memberid}).then(function (resp) {
-        console.log(resp.data)
-        if (resp.data.message === undefined) {
-          this.memberData = resp.data
-          this.prefix = resp.data.Prefix
-          this.name = resp.data.Name
-          this.surname = resp.data.Surname
-          this.dob = resp.data.DOB
-          this.gender = resp.data.Gender
-          this.phone = resp.data.Phone
-          this.numCanBorrow = resp.data.NumCanBorrow
-          this.borrowLevel = resp.data.BorrowLevel
-        } else {
+      if (this.type === 'uid') {
+        const getMemberData = firebase.functions().httpsCallable('getMemberData')
+        getMemberData({uid: this.memberid}).then(function (resp) {
+          console.log(resp.data)
+          if (resp.data.message === undefined) {
+            this.memberData = resp.data
+            this.prefix = resp.data.Prefix
+            this.name = resp.data.Name
+            this.surname = resp.data.Surname
+            this.dob = resp.data.DOB
+            this.gender = resp.data.Gender
+            this.phone = resp.data.Phone
+            this.numCanBorrow = resp.data.NumCanBorrow
+            this.borrowLevel = resp.data.BorrowLevel
+          } else {
+            this.memberData = null
+            this.errMsg = resp.data.message
+          }
+          this.loading = false
+        }.bind(this)).catch(function (error) {
+          console.error(error)
           this.memberData = null
-          this.errMsg = resp.data.message
-        }
-        this.loading = false
-      }.bind(this)).catch(function (error) {
-        console.error(error)
-        this.memberData = null
-        this.loading = false
-      }.bind(this))
+          this.loading = false
+        }.bind(this))
+      } else if (this.type === 'email') {
+        const getMemberDatabyEmail = firebase.functions().httpsCallable('getMemberDatabyEmail')
+        getMemberDatabyEmail({email: this.memberid}).then(function (resp) {
+          console.log(resp.data)
+          if (resp.data.message === undefined) {
+            this.type = 'uid'
+            this.memberData = resp.data
+            this.memberid = resp.data.uid
+            this.prefix = resp.data.Prefix
+            this.name = resp.data.Name
+            this.surname = resp.data.Surname
+            this.dob = resp.data.DOB
+            this.gender = resp.data.Gender
+            this.phone = resp.data.Phone
+            this.numCanBorrow = resp.data.NumCanBorrow
+            this.borrowLevel = resp.data.BorrowLevel
+          } else {
+            this.memberData = null
+            this.errMsg = resp.data.message
+          }
+          this.loading = false
+        }.bind(this)).catch(function (error) {
+          console.error(error)
+          this.memberData = null
+          this.loading = false
+        }.bind(this))
+      }
     },
     editMember: function () {
       console.log('add')

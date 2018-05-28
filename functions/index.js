@@ -37,12 +37,13 @@ exports.searchBook = functions.https.onCall((data, context) => {
       password: elasticSearchConfig.password
     },
     body: {
+      min_score: 1,
       from: 0,
       size: 50,
       query: {
         multi_match: {
           query: searchText,
-          fields: ["Name^1.5", "Publisher", "Author", "ISBN", "ShelfID"],
+          fields: ["Name^5", "Publisher^2", "Author^2", "ISBN^1", "ShelfID^0.5"],
           fuzziness: 1
         }
       }
@@ -1165,4 +1166,43 @@ exports.analysis1093_3 = functions.https.onCall((data, context) => {
       })
       return result.slice(0,9)
   })
+})
+
+exports.getMemberDatabyEmail = functions.https.onCall((data, context) => {
+  if (context.auth !== null) {
+    return usersFS.doc(context.auth.uid).get().then((doc) => {
+      if (doc.exists) {
+        if (doc.data().type === 'staff' && doc.data().Status) {
+          if (typeof data.email !== 'string') return {message: 'uid-not-ready'}
+          return auth.getUserByEmail(data.email.trim())
+        }
+      }
+      return {message: 'permission-deny'}
+    }).catch(error => {
+      console.error(error)
+      return error
+    }).then((userRecord) => {
+      if (typeof userRecord.message !== 'undefined') return userRecord
+      return usersFS.doc(userRecord.uid).get()
+    }).catch(error => {
+      console.error(error)
+      return error
+    }).then((doc) => {
+      if (typeof doc.message !== 'undefined') return doc
+      if (doc.exists) {
+        if (doc.data().type !== 'member') return {message: 'not-member'}
+        let userData = doc.data()
+        userData.uid = doc.id
+        return userData
+      } else {
+        return {message:'user-not-found'}
+      }
+    }).catch(error => {
+      console.error(error)
+      return error
+    })
+  }
+  else return {
+    message: 'auth-error'
+  }
 })
